@@ -123,6 +123,9 @@ namespace big::chat
 {
 	inline SpamReason is_text_spam(const char* text, player_ptr player)
 	{
+		if ((player->is_trusted || (g.session.trust_friends && player->is_friend())))
+			return SpamReason::NOT_A_SPAMMER; // don't filter messages from friends
+
 		if (g.session.use_spam_timer)
 		{
 			if (player->last_message_time.has_value())
@@ -152,8 +155,8 @@ namespace big::chat
 		    g_file_manager.get_project_file(spam_reason != SpamReason::NOT_A_SPAMMER ? "./spam.log" : "./chat.log").get_path(),
 		    std::ios::app);
 
-		auto& data = *player->get_net_data();
-		auto ip    = player->get_ip_address();
+		auto rockstar_id = player->get_rockstar_id();
+		auto ip          = player->get_ip_address();
 
 		auto now        = std::chrono::system_clock::now();
 		auto ms         = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
@@ -171,15 +174,15 @@ namespace big::chat
 		log << spam_reason_str << "[" << std::put_time(&local_time, "%m/%d/%Y %I:%M:%S") << ":" << std::setfill('0') << std::setw(3) << ms.count() << " " << std::put_time(&local_time, "%p") << "] ";
 
 		if (ip)
-			log << player->get_name() << " (" << data.m_gamer_handle.m_rockstar_id << ") <" << (int)ip.value().m_field1 << "."
+			log << player->get_name() << " (" << rockstar_id << ") <" << (int)ip.value().m_field1 << "."
 			    << (int)ip.value().m_field2 << "." << (int)ip.value().m_field3 << "." << (int)ip.value().m_field4 << "> " << ((is_team == true) ? "[TEAM]: " : "[ALL]: ") << msg << std::endl;
 		else
-			log << player->get_name() << " (" << data.m_gamer_handle.m_rockstar_id << ") <UNKNOWN> " << ((is_team == true) ? "[TEAM]: " : "[ALL]: ") << msg << std::endl;
+			log << player->get_name() << " (" << rockstar_id << ") <UNKNOWN> " << ((is_team == true) ? "[TEAM]: " : "[ALL]: ") << msg << std::endl;
 
 		log.close();
 	}
 
-	inline void draw_chat(const char* msg, const char* player_name, bool is_team)
+	inline void render_chat(const char* msg, const char* player_name, bool is_team)
 	{
 		int scaleform = GRAPHICS::REQUEST_SCALEFORM_MOVIE("MULTIPLAYER_CHAT");
 
@@ -207,6 +210,16 @@ namespace big::chat
 		// fix broken scaleforms, when chat alrdy opened
 		if (const auto chat_data = *g_pointers->m_gta.m_chat_data; chat_data && (chat_data->m_chat_open || chat_data->m_timer_two))
 			HUD::CLOSE_MP_TEXT_CHAT();
+	}
+
+	inline void draw_chat(const std::string& message, const std::string& sender, bool is_team)
+	{
+		if (rage::tlsContext::get()->m_is_script_thread_active)
+			render_chat(message.c_str(), sender.c_str(), is_team);
+		else
+			g_fiber_pool->queue_job([message, sender, is_team] {
+				render_chat(message.c_str(), sender.c_str(), is_team);
+			});
 	}
 
 	inline bool is_on_same_team(CNetGamePlayer* player)
@@ -272,11 +285,17 @@ namespace big::chat
 		}
 
 		if (draw)
-			if (rage::tlsContext::get()->m_is_script_thread_active)
-				draw_chat(message.c_str(), g_player_service->get_self()->get_name(), is_team);
-			else
-				g_fiber_pool->queue_job([message, target, is_team] {
-					draw_chat(message.c_str(), g_player_service->get_self()->get_name(), is_team);
-				});
+			draw_chat(message, g_player_service->get_self()->get_name(), is_team);
 	}
+}
+
+namespace big
+{
+	struct chat_message
+	{
+		std::string sender;
+		std::string content;
+	};
+
+	inline std::queue<chat_message> translate_queue;
 }
