@@ -17,7 +17,7 @@ namespace big
 
 	CVehicle* player::get_current_vehicle() const
 	{
-		if (const auto ped = this->get_ped(); ped != nullptr)
+		if (const auto ped = get_ped(); ped != nullptr)
 			if (const auto vehicle = ped->m_vehicle; vehicle != nullptr)
 				return vehicle;
 		return nullptr;
@@ -47,8 +47,8 @@ namespace big
 
 	CPed* player::get_ped() const
 	{
-		if (const auto player_info = this->get_player_info(); player_info != nullptr)
-			if (const auto ped = player_info->m_ped; ped != nullptr)
+		if (auto player_info = get_player_info())
+			if (auto ped = player_info->m_ped)
 				return ped;
 		return nullptr;
 	}
@@ -133,7 +133,7 @@ namespace big
 
 	uint8_t player::id() const
 	{
-		if (*g_pointers->m_gta.m_is_session_started)
+		if (gta_util::get_network_player_mgr()->m_player_count > 0)
 			return get_net_game_player() == nullptr ? -1 : m_net_game_player->m_player_id;
 		else
 			return self::id;
@@ -161,7 +161,7 @@ namespace big
 
 	std::string player::to_lowercase_identifier() const
 	{
-		std::string lower = this->get_name();
+		std::string lower = get_name();
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
 		return lower;
