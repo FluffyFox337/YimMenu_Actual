@@ -481,7 +481,7 @@ namespace big
         // Network
         {
             "N",
-            "48 8B 0D ? ? ? ? 48 8B D7 E8 ? ? ? ? 84 C0 75 17 48 8B 0D ? ? ? ? 48 8B D7",
+            "48 8B 0D ? ? ? ? 45 33 C9 48 8B D7",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_network = ptr.add(3).rip().as<Network**>();
@@ -615,15 +615,6 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_show_profile_by_gamer_handle = ptr.add(1).rip().as<functions::show_profile_by_gamer_handle>();
-            }
-        },
-        // Network Config
-        {
-            "NC",
-            "48 8B 0D ? ? ? ? 45 33 C9 48 8B D7",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_network_config = ptr.add(3).rip().as<uint64_t>();
             }
         },
         // Script VM
@@ -1653,7 +1644,7 @@ namespace big
         // Nullsub
         {
             "NS",
-            "90 C3",
+            "90 C3 CC",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_nullsub = ptr.as<void(*)()>();
@@ -1693,6 +1684,24 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_can_create_vehicle = ptr.as<functions::can_create_vehicle>();
+            }
+        },
+        // Cam Gameplay Director
+        {
+            "CGD",
+            "48 8B 05 ? ? ? ? 38 98 ? ? ? ? 8A C3",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_cam_gameplay_director = ptr.add(3).rip().as<uintptr_t*>();
+            }
+        },
+        // Cam Gameplay Director Update
+        {
+            "CGDU",
+            "E9 CD 09 00 00",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_cam_gameplay_director_update = ptr.sub(0x32).as<functions::cam_gameplay_directory_update>();
             }
         },
         // Format Integer
@@ -1875,6 +1884,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_create_pool_item = ptr.sub(0x6).as<PVOID>();
+            }
+        },
+        // Scope Sway Function
+        {
+            "SSF",
+            "74 ? F3 0F 10 15 ? ? ? ? 41 B9 ? ? ? ? 48 8B D0 48 8B CF 44 89 7C 24",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_scope_sway_function = ptr.as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end

@@ -6,9 +6,9 @@ namespace big::scr_globals
 {
 	static inline const script_global gsbd(2648938);
 	static inline const script_global gsbd_fm(1845281);
-	static inline const script_global gsbd_kicking(1877042);
+	static inline const script_global gsbd_kicking(1877252);
 	static inline const script_global gsbd_fm_events(1916617);
-	static inline const script_global gsbd_block_c(2657971);
+	static inline const script_global gsbd_block_c(2652592);
 	static inline const script_global gsbd_property_instances(1936863);
 
 	static inline const script_global globalplayer_bd(2657971);
@@ -28,7 +28,6 @@ namespace big::scr_globals
 	static inline const script_global mission_creator_radar_follows_camera(2621443);
 	static inline const script_global mission_creator_exited(1574530);
 
-	static inline const script_global in_multiplayer(79389); // g_bInMultiplayer
 	static inline const script_global transition_state(1575011);
 	static inline const script_global sctv_spectator(2697731); // pausemenu_multiplayer function 0xE49C42EC
 
@@ -71,7 +70,7 @@ namespace big::scr_locals
 {
 	namespace am_hunt_the_beast
 	{
-		constexpr static auto broadcast_idx        = 607;  // (bParam0) != 0;
+		constexpr static auto broadcast_idx        = 604;  // (bParam0) != 0;
 		constexpr static auto player_broadcast_idx = 2588; // if (NETWORK::PARTICIPANT_ID_TO_INT() != -1)
 	}
 

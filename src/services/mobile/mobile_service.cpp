@@ -148,7 +148,7 @@ namespace big
 		return -1;
 	}
 
-	std::string get_static_property_name(int property)
+	std::string get_static_property_name(int property, int garage_slot_iterator)
 	{
 		switch (property)
 		{
@@ -188,12 +188,23 @@ namespace big
 			case 17: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_BHUB_GAR3"); //Nightclub B4
 			case 18: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("ARENA_GAR_F0"); //Arena Workshop
 			case 19: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("ARENA_GAR_F1"); //Arena Workshop B1
-			case 20: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("ARENA_GAR_F2"); //Arena Workshop B1
+			case 20: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("ARENA_GAR_F2"); //Arena Workshop B2
 			case 21: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("CASINO_GARNAME"); //Casino Penthouse
 			case 22: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("ARCADE_GARNAME"); //Arcade
 			case 25: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("AUT_SHP_GAR"); //Auto Shop
 			case 26: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("FIXER_GARNAME"); //Agency
-			case 29: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("WIN22_GARNAME"); //Eclipse Blvd Garage
+			case 29:
+			{
+				int garage_level = (garage_slot_iterator - 1) / 10;
+				switch (garage_level)
+				{
+					case 0: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MSG_B1"); //Eclipse Blvd Garage B1
+					case 1: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MSG_B2"); //Eclipse Blvd Garage B2
+					case 2: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MSG_B3"); //Eclipse Blvd Garage B3
+					case 3: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MSG_B4"); //Eclipse Blvd Garage B4
+					case 4: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MSG_B5"); //Eclipse Blvd Garage B5
+				}
+			}
 			case 31: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("BO_GARNAME"); //Bail Office
 			case MAX_GARAGE_NUM+0: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("GRTRUCK"); //Mobile Operations Center
 			case MAX_GARAGE_NUM+1: return HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_BHUB_GAR0"); //Nightclub B1
@@ -217,7 +228,7 @@ namespace big
 					auto item_in_slot = *scr_globals::property_garage.at(garage_offset).at(garage_slot_iterator).as<PINT>() - 1;
 					if (item_in_slot == m_id)
 					{
-						auto static_property_string = get_static_property_name(property_iterator);
+						auto static_property_string = get_static_property_name(property_iterator, garage_slot_iterator);
 						if (static_property_string.empty())
 						{
 							m_garage = HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(scr_globals::property_names.at(property_stat_state, 1951).at(16).as<const char*>());
