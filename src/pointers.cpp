@@ -1,7 +1,6 @@
 #include "pointers.hpp"
 
 #include "gta_pointers_layout_info.hpp"
-#include "memory/all.hpp"
 #include "sc_pointers_layout_info.hpp"
 
 namespace big
@@ -1210,7 +1209,7 @@ namespace big
             "83 3D ? ? ? ? ? 44 8B C3",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_language = ptr.add(2).rip().add(1).as<int*>();
+                g_pointers->m_gta.m_language = ptr.add(2).rip().add(1).as<eGameLanguage*>();
                 g_pointers->m_gta.m_update_language = ptr.add(0x38).rip().as<functions::update_language>();
             }
         },
@@ -1893,6 +1892,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_scope_sway_function = ptr.as<PVOID>();
+            }
+        },
+        // Report Myself Sender
+        {
+            "RPS",
+            "E8 ? ? ? ? 33 C0 87 83 90 02 00 00",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_report_myself_sender = ptr.add(1).rip().as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end
