@@ -446,6 +446,7 @@ namespace big
 			CommandAccessLevel chat_command_default_access_level = CommandAccessLevel::FRIENDLY;
 
 			bool kick_host_when_forcing_host = false;
+			bool exclude_modders_from_kick_host = false;
 
 			bool explosion_karma = false;
 			bool damage_karma    = false;
@@ -495,7 +496,7 @@ namespace big
 				NLOHMANN_DEFINE_TYPE_INTRUSIVE(chat_translator, enabled, print_result, draw_result, bypass_same_language, target_language, endpoint);
 			} chat_translator{};
 
-			NLOHMANN_DEFINE_TYPE_INTRUSIVE(session, log_chat_messages, log_text_messages, decloak_players, spoof_host_token_type, custom_host_token, hide_token_spoofing_when_host, force_script_host, player_magnet_enabled, player_magnet_count, is_team, join_in_sctv_slots, kick_host_when_forcing_host, explosion_karma, damage_karma, disable_traffic, disable_peds, force_thunder, block_ceo_money, randomize_ceo_colors, block_jobs, block_muggers, block_ceo_raids, block_ceo_creation, send_to_apartment_idx, send_to_warehouse_idx, chat_commands, chat_command_default_access_level, anonymous_bounty, lock_session, fast_join, unhide_players_from_player_list, allow_friends_into_locked_session, trust_friends, use_spam_timer, spam_timer, spam_length, chat_translator, script_block_opts)
+			NLOHMANN_DEFINE_TYPE_INTRUSIVE(session, log_chat_messages, log_text_messages, decloak_players, spoof_host_token_type, custom_host_token, hide_token_spoofing_when_host, force_script_host, player_magnet_enabled, player_magnet_count, is_team, join_in_sctv_slots, kick_host_when_forcing_host, exclude_modders_from_kick_host, explosion_karma, damage_karma, disable_traffic, disable_peds, force_thunder, block_ceo_money, randomize_ceo_colors, block_jobs, block_muggers, block_ceo_raids, block_ceo_creation, send_to_apartment_idx, send_to_warehouse_idx, chat_commands, chat_command_default_access_level, anonymous_bounty, lock_session, fast_join, unhide_players_from_player_list, allow_friends_into_locked_session, trust_friends, use_spam_timer, spam_timer, spam_length, chat_translator, script_block_opts)
 		} session{};
 
 		struct settings
@@ -908,7 +909,7 @@ namespace big
 				float fov                = 60.f;
 				float distance           = 200.f;
 				int32_t selected_bone    = (int32_t)ePedBoneType::HEAD;
-				NLOHMANN_DEFINE_TYPE_INTRUSIVE(aimbot, enable, only_on_ped_type, only_on_player, only_on_enemy, fov, distance, selected_bone)
+				NLOHMANN_DEFINE_TYPE_INTRUSIVE(aimbot, enable, only_on_ped_type, only_on_player, only_on_enemy, fov, distance, selected_bone, use_weapon_range)
 			} aimbot{};
 
 			struct flying_axe
